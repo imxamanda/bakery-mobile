@@ -4,14 +4,14 @@ import { TextInput, Button } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
 
 
-export default function FormCardapio({navigation}) {
+export default function FormCardapio({navigation, route }) {
 
   const { acao, cardapio: cardapioAntigo } = route.params;
 
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
   const [calorias, setCalorias] = useState('')
-  const [data, setData] = useState('')
+  // const [date, setDate] = useState('')
 
   const [showMensagemErro, setShowMensagemErro] = useState(false)
 
@@ -20,12 +20,12 @@ export default function FormCardapio({navigation}) {
       setNome(cardapioAntigo.nome)
       setDescricao(cardapioAntigo.descricao)
       setCalorias(cardapioAntigo.calorias)
-      setData(cardapioAntigo.data)
+      // setData(cardapioAntigo.data)
     }
   }, [])
 
   function salvar() {
-    if (nome === '' || descricao === '' || calorias === '' || data === '') {
+    if (nome === '' || descricao === '' || calorias === '') {
       setShowMensagemErro(true)
   } else {
       setShowMensagemErro(false)
@@ -34,7 +34,7 @@ export default function FormCardapio({navigation}) {
         nome: nome,
         descricao: descricao,
         calorias: calorias,
-        data: data
+        // data: data
       }
 
       if (cardapioNovo) {
@@ -51,10 +51,6 @@ export default function FormCardapio({navigation}) {
        navigation.goBack()
     }
   }
-
-
-
-
 
   return (
     <View style={styles.container}>
@@ -85,14 +81,14 @@ export default function FormCardapio({navigation}) {
          value={calorias}
          onChangeText={text => setCalorias(text)}
       />
-      <TextInput
+      {/* <TextInput
          style={styles.input}
          label={'Data'}
          mode='outlined'
          keyboardType='date'
          value={data}
          onChangeText={text => setData(text)}
-      />
+      /> */}
 
         {showMensagemErro && (
      <Text style={{ color: 'red', textAlign: 'center' }}>

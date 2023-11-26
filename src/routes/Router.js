@@ -17,7 +17,7 @@ export default function StackRouter() {
 
          <Drawer.Screen name='SouCLi' component={SouCli}/>
 
-         <Drawer.Screen name='Cardapio' component={StackCardapio}/>
+         <Drawer.Screen name='ListaCardapio' component={StackCardapio}/>
          
 
     </Drawer.Navigator>
