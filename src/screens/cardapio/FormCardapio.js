@@ -1,118 +1,123 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { TextInput, Button } from 'react-native-paper'
+import { Formik } from 'formik'
+import React, { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { Button, Text, TextInput } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
+import * as Yup from 'yup'
 
 
-export default function FormCardapio({navigation, route }) {
+export default function FormCardapio({ navigation, route }) {
 
-  const { acao, cardapio: cardapioAntigo } = route.params;
+  const { acao, cardapio: cardapioAntigo } = route.params
 
-  const [nome, setNome] = useState('')
-  const [descricao, setDescricao] = useState('')
-  const [calorias, setCalorias] = useState('')
-  // const [date, setDate] = useState('')
+  const validationSchema = Yup.object().shape({
+    nome: Yup.string().required(),
+    descricao: Yup.string().required(),
+    calorias: Yup.string().required(),
+})
 
-  const [showMensagemErro, setShowMensagemErro] = useState(false)
+useEffect(() => {
 
-  useEffect(() => {
-    if (cardapioAntigo) {
+  console.log('cardapio -> ', cardapioAntigo)
+
+  if (pessoaAntiga) {
       setNome(cardapioAntigo.nome)
       setDescricao(cardapioAntigo.descricao)
       setCalorias(cardapioAntigo.calorias)
-      // setData(cardapioAntigo.data)
-    }
-  }, [])
-
-  function salvar() {
-    if (nome === '' || descricao === '' || calorias === '') {
-      setShowMensagemErro(true)
-  } else {
-      setShowMensagemErro(false)
-
-      const cardapioNovo = {
-        nome: nome,
-        descricao: descricao,
-        calorias: calorias,
-        // data: data
-      }
-
-      if (cardapioNovo) {
-        acao(cardapioAntigo, cardapioNovo)
-      } else {
-        acao(cardapioNovo)
-      }
-      
-      Toast.show({
-        type: 'success',
-        text1: 'Cardápio salvo com sucesso!'
-       })
-
-       navigation.goBack()
-    }
   }
+
+}, [])
+
+
+function salvar(novoCardapio) {
+  console.log('SALVAR DADOS NO CARDAPIO -> ', novoCardapio)
+
+  if (cardapioAntigo) {
+      acao(cardapioAntigo, novoCardapio)
+  } else {
+      acao(novoCardapio)
+  }
+
+  Toast.show({
+      type: 'success',
+      text1: 'Item salvo com sucesso!'
+  })
+
+  navigation.goBack()
+}
 
   return (
     <View style={styles.container}>
-      <Text variant='titleLarge'>
-      {cardapioAntigo ? 'Editar Cardápio' : 'Adicionar ao Cardápio'}
-      </Text>
 
-      <View>
-      <TextInput
-         style={styles.input}
-         label={'Nome'}
-         mode='outlined'
-         value={nome}
-         onChangeText={text => setNome(text)}
-      />
-      <TextInput
-         style={styles.input}
-         label={'Descrição'}
-         mode='outlined'
-         value={descricao}
-         onChangeText={text => setDescricao(text)}
-      />
-      <TextInput
-         style={styles.input}
-         label={'Calorias'}
-         mode='outlined'
-         keyboardType='numeric'
-         value={calorias}
-         onChangeText={text => setCalorias(text)}
-      />
-      {/* <TextInput
-         style={styles.input}
-         label={'Data'}
-         mode='outlined'
-         keyboardType='date'
-         value={data}
-         onChangeText={text => setData(text)}
-      /> */}
+    <Text variant='titleLarge' style={styles.title} >{cardapioAntigo ? 'Editar Cardapio' : 'Adicionar ao Cardapio'}</Text>
 
-        {showMensagemErro && (
-     <Text style={{ color: 'red', textAlign: 'center' }}>
-        Preencha todos os campos!
-       </Text>
-       )}
-      </View>
+    <Formik
+    initialValues={{
+     nome: '',
+     descricao: '',
+     calorias: ''
+     }}
+      validationSchema={validationSchema}
+      onSubmit={values => salvar(values)}
+    >
 
-      <View>
-        <Button
-          style={styles.button}
-          mode='contained-tonal'
-          onPress={() => navigation.goBack()}
-        >
-          Voltar
-        </Button>
-        <Button
-          style={styles.button}
-          mode='contained'
-          onPress={salvar}
-        >
-        Salvar
-        </Button>
-      </View>
+{({ handleChange, handleBlur, handleSubmit, touched, errors, values }) => (
+  <>
+    <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input}
+      mode='outlined'
+      label='Nome'
+      value={values.nome}
+      onChangeText={handleChange('nome')}
+      onBlur={handleBlur('nome')}
+    />
+
+   <TextInput
+      style={styles.input}
+      mode='outlined'
+      label='Descrição'
+      value={values.descricao}
+      onChangeText={handleChange('descricao')}
+      onBlur={handleBlur('descricao')}
+    />
+
+    <TextInput
+      style={styles.input}
+      mode='outlined'
+      label='Calorias'
+      value={values.calorias}
+      onChangeText={handleChange('calorias')}
+      onBlur={handleBlur('calorias')}
+    />  
+    </View>
+    <View style={styles.buttonContainer}>
+      
+    <Button
+      style={styles.button}
+      mode='contained-tonal'
+      onPress={() => navigation.goBack()}
+    >
+      Voltar
+    </Button>
+
+    <Button
+      style={styles.button}
+      mode='contained'
+      onPress={handleSubmit}
+    >
+      Salvar
+    </Button>
+
+    </View>
+  
+  </>
+
+
+)}
+    </Formik>
+
+    
     </View>
   )
 }
@@ -123,10 +128,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
 },
+title: {
+    fontWeight: 'bold',
+    margin: 10
+},
+inputContainer: {
+    width: '90%',
+    flex: 1
+},
 input: {
-  marginBottom: 10,
+    margin: 10
+},
+buttonContainer: {
+    flexDirection: 'row',
+    width: '90%',
+    gap: 10,
+    marginBottom: 10
 },
 button: {
-  marginTop: 10,
-},
+    flex: 1
+}
 })

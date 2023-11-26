@@ -1,106 +1,131 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, Card, FAB } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
+import { FlatList, StyleSheet, View } from 'react-native'
+import { Button, Card, Dialog, FAB, MD3Colors, Portal, Text } from 'react-native-paper'
+import Toast from 'react-native-toast-message'
 
 export default function ListaCardapio({ navigation, route }) {
 
-  const navigateVoltar = () =>{
-    navigation.navigate('Home');
+  const [cardapios, setCardapios] = useState([])
+  const [showModalExcluirCardapio, setShowModalExcluirCardapio] = useState(false)
+  const [cardapioASerExcluido, setCardapioASerExcluido] = useState(null)
+
+  useEffect(() => {
+    loadCardapios()
+  }, [])
+
+  async function loadCardapios() {
+    const response = await AsyncStorage.getItem('cardapios');
+    console.log("🚀 ~ file: ListaCardapioAsyncStorage.js:21 ~ loadCardapios ~ response:", response)
+    const cardapiosStorage = response ? JSON.parse(response) : [];
+    setCardapios(cardapiosStorage);
   }
 
-  const [cardapio, setCardapio] = useState([]);
-    useEffect(() => {
-      loadCardapio();
-    }, []);
+  const showModal = () => setShowModalExcluirCardapio(true);
 
-    async function loadCardapio() {
-      const response = await AsyncStorage.getItem('cardapios');
-      const cardapioStorage = response ? JSON.parse(response) : [];
-      setCardapio(cardapioStorage);
-    }
+  const hideModal = () => setShowModalExcluirCardapio(false);
 
-    async function adicionarCardapio(novoCardapio) {
-      let novaListaCardapio = [...cardapio, novoCardapio];
-      await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapio));
-      setCardapio(novaListaCardapio);
-    }
-    
+  async function adicionarCardapio(cardapio) {
+    let novaListaCardapios = cardapios;
+    novaListaCardapios.push(cardapio);
+    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios));
+    setCardapios(novaListaCardapios);
+  }
 
-    async function editarCardapio(cardapioAntigo, novosDados) {
+  async function editarCardapio(cardapioAntigo, novosDados) {
+    console.log('CARDAPIO ANTIGO -> ', cardapioAntigo)
+    console.log('DADOS NOVOS -> ', novosDados)
 
-      const novaListaCardapio = cardapio.map(cardapio => {
-        if (cardapio === cardapioAntigo) {
-          return novosDados;
-        } else {
-          return cardapio;
-        }
-      });
+    const novaListaCardapios = cardapios.map(cardapio => {
+      if (cardapio == cardapioAntigo) {
+        return novosDados
+      } else {
+        return cardapio
+      }
+    })
 
-      await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapio));
-      setCardapio(novaListaCardapio);
-    }
+    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
+    setPessoas(novaListaCardapios)
 
-    async function excluirCardapio(cardapio) {
-      const novaListaCardapio = cardapio.filter
-      (item => item !== cardapio);
-      console.log(cardapio)
-      await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapio));
-      setCardapio(novaListaCardapio);
-      Toast.show({
-        type: 'success',
-        text1: 'Ítem excluído com sucesso!',
-      });
-    }
+  }
 
+  async function excluirCardapio(cardapio) {
+    const novaListaCardapios = cardapios.filter(c => c !== cardapio)
+    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
+    setPessoas(novaListaCardapios)
+    Toast.show({
+      type: 'success',
+      text1: 'Cardapio excluido com sucesso!'
+    })
+  }
+
+  function handleExluirCardapio() {
+    excluirCardapio(cardapioASerExcluido)
+    setCardapioASerExcluido(null)
+    hideModal()
+  }
 
 
   return (
     <View style={styles.container}>
-      <Text  variant='titleLarge' style={styles.title} >Cardápio</Text>
+      <Text variant='titleLarge' style={styles.title} >Cardapio</Text>
+
       <FlatList
         style={styles.list}
-        data={cardapio}
+        data={cardapios}
         renderItem={({ item }) => (
-          <Card
-            mode='outlined'
-            style={styles.card}
-          >
-            <Card.Content
-            style={styles.cardContent}
+
+        <Card
+         mode='outlined'
+        style={styles.card}
+      >
+                <Card.Content
+              style={styles.cardContent}
             >
               <View style={{ flex: 1 }}>
-              <Text variant='titleMedium'>{item?.nome}</Text>
-              <Text variant='bodyLarge'>Descrição: {item?.descricao}</Text>
-              <Text variant='bodyLarge'>Calorias: {item?.calorias}</Text>
-              {/* <Text variant='bodyLarge'>Data: {item && item.data}</Text>*/}
-              </View> 
-            </Card.Content>
+                <Text variant='titleMedium'>{item?.nome}</Text>
+                <Text variant='bodyLarge'>Descrição: {item?.descricao}</Text>
+                <Text variant='bodyLarge'>Calorias: {item?.calorias} kcal</Text>
+                
+              </View>
+              </Card.Content>
+
             <Card.Actions>
-                  <Button onPress={() => navigation.push('FormCardapio', { acao: editarCardapio, cardapio: item })}>
-                    Editar
-                  </Button>
-                  <Button onPress={() => excluirCardapio(item)}>
-                    Excluir
-                  </Button>
-                </Card.Actions>
+              <Button onPress={() => navigation.push('FormCardapio', { acao: editarCardapio, cardapio: item })}>
+                Editar
+              </Button>
+              <Button onPress={() => {
+                setCardapioASerExcluido(item)
+                showModal()
+              }}>
+                Excluir
+              </Button>
+            </Card.Actions>
           </Card>
-        )}       
+        )}
       />
-       <FAB
-            icon="plus"
-            style={styles.fab}
-            onPress={() => navigation.push('FormCardapio', { acao: adicionarCardapio })}
-          />
+
+     <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.push('FormCardapio,', { acao: adicionarCardapio })}
+      />
+
+<Portal>
+        <Dialog visible={showModalExcluirCardapio} onDismiss={hideModal}>
+          <Dialog.Title>Atenção!</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">Tem certeza que deseja excluir este item?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideModal}>Voltar</Button>
+            <Button onPress={handleExluirCardapio}>Tenho Certeza</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
 
 
-           <TouchableOpacity 
-              style={styles.button}
-              onPress={navigateVoltar}
-          >  
-            <Text style={styles.textButton}>Voltar</Text>
-          </TouchableOpacity>
+      
     </View>
   )
 }
@@ -108,9 +133,8 @@ export default function ListaCardapio({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#881235'
+    alignItems: 'center'
   },
   title: {
     fontWeight: 'bold',
@@ -126,29 +150,14 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   card: {
-    marginTop: 15,
-    backgroundColor: '#fff'
+    marginTop: 15
   },
   cardContent: {
     flexDirection: 'row',
+    backgroundColor: MD3Colors.primary80,
     borderWidth: 2,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     paddingBottom: 15
-  },
-  button: {
-    backgroundColor: "#fff",
-    borderRadius: 100,
-    paddingTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    width: 100,
-    marginBottom: 20
-  },
-  textButton: {
-    fontSize: 20,
-    color: "#881235",
-    fontWeight: "bold",
-    alignSelf: "center",
-  },
+  }
 })
