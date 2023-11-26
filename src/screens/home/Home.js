@@ -25,7 +25,7 @@ const Home = ({navigation}) => {
       style={styles.banner}
       />
 
-      <Text style={{fontSize:20,color:'white', alignItems: 'center', marginTop:20, marginBottom:50  }}>BEM VINDO À CARLO 'S BAKERY</Text>
+      <Text style={{fontSize:20,color:'white', alignItems: 'center', marginTop:20, marginBottom:50  }}>BEM VINDO À CARLO'S BAKERY</Text>
 
       <TouchableOpacity 
               style={styles.button}
