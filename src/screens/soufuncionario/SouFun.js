@@ -5,6 +5,9 @@ import { TouchableOpacity } from 'react-native'
 
 const SouFun = ({navigation}) => {
 
+    const navigateCardapio = () =>{
+        navigation.navigate('ListaCardapio');
+      }
     const navigateVoltar = () =>{
         navigation.navigate('Home');
       }
@@ -31,6 +34,7 @@ const SouFun = ({navigation}) => {
 
           <TouchableOpacity 
               style={styles.button}
+              onPress={navigateCardapio}
       >  
             <Text style={styles.textButton}>Adicionar ao Cardápio</Text>
           </TouchableOpacity>
