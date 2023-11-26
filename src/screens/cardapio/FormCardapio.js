@@ -1,5 +1,5 @@
 import { Formik } from 'formik'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Button, Text, TextInput } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
@@ -9,6 +9,10 @@ import * as Yup from 'yup'
 export default function FormCardapio({ navigation, route }) {
 
   const { acao, cardapio: cardapioAntigo } = route.params
+
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [calorias, setCalorias] = useState(0);
 
   const validationSchema = Yup.object().shape({
     nome: Yup.string().required(),
@@ -20,7 +24,7 @@ useEffect(() => {
 
   console.log('cardapio -> ', cardapioAntigo)
 
-  if (pessoaAntiga) {
+  if (cardapioAntigo) {
       setNome(cardapioAntigo.nome)
       setDescricao(cardapioAntigo.descricao)
       setCalorias(cardapioAntigo.calorias)

@@ -45,14 +45,14 @@ export default function ListaCardapio({ navigation, route }) {
     })
 
     await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
-    setPessoas(novaListaCardapios)
+    setCardapios(novaListaCardapios)
 
   }
 
   async function excluirCardapio(cardapio) {
     const novaListaCardapios = cardapios.filter(c => c !== cardapio)
     await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
-    setPessoas(novaListaCardapios)
+    setCardapios(novaListaCardapios)
     Toast.show({
       type: 'success',
       text1: 'Cardapio excluido com sucesso!'
