@@ -1,5 +1,6 @@
 import { Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
+import { Image } from 'react-native'
 import { StyleSheet, View } from 'react-native'
 import { Button, Text, TextInput } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
@@ -52,6 +53,10 @@ function salvar(novoCardapio) {
 
   return (
     <View style={styles.container}>
+      <Image
+      source={require('../../../assets/logo.png')}
+      style={styles.logo}
+      />
 
     <Text variant='titleLarge' style={styles.title} >{cardapioAntigo ? 'Editar Cardapio' : 'Adicionar ao Cardapio'}</Text>
 
@@ -98,11 +103,11 @@ function salvar(novoCardapio) {
     <View style={styles.buttonContainer}>
       
     <Button
-      style={styles.button}
+      style={styles.button1}
       mode='contained-tonal'
       onPress={() => navigation.goBack()}
     >
-      Voltar
+      <Text style={{color:'#881235', fontWeight: "bold", fontSize: 20}}>Voltar</Text>
     </Button>
 
     <Button
@@ -110,7 +115,7 @@ function salvar(novoCardapio) {
       mode='contained'
       onPress={handleSubmit}
     >
-      Salvar
+      <Text style={{color:'#881235', fontWeight: "bold", fontSize: 20 }}>Salvar</Text>
     </Button>
 
     </View>
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#881235'
 },
 title: {
-    fontWeight: 'bold',
+
     margin: 10
 },
 inputContainer: {
@@ -151,6 +156,34 @@ buttonContainer: {
     marginBottom: 10
 },
 button: {
-    flex: 1
-}
+  backgroundColor: "#c9c9c9",
+  borderRadius: 100,
+  paddingTop: 10,
+  paddingVertical: 10,
+  paddingHorizontal: 12,
+  width: 150,
+  marginBottom: 20,
+},
+button1: {
+  backgroundColor: "#fff",
+  borderRadius: 100,
+  paddingTop: 10,
+  paddingVertical: 10,
+  paddingHorizontal: 12,
+  width: 150,
+  marginBottom: 20,
+  color: "#881235",
+  marginLeft: 15,
+  marginRight: 10
+},
+textButton: {
+  fontSize: 22,
+  color: "#881235",
+  fontWeight: "bold",
+  alignSelf: "center",
+},
+logo:{
+  width: 400,
+  height: 50,
+},
 })

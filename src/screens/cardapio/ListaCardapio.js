@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native'
 import { FlatList, Image, StyleSheet, View } from 'react-native'
 import { Button, Card, Dialog, FAB, MD3Colors, Portal, Text } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
+import { PDFDocument, PDFText } from 'react-native-pdf-lib';
 
 export default function ListaCardapio({ navigation, route }) {
 
@@ -70,6 +71,7 @@ export default function ListaCardapio({ navigation, route }) {
     setCardapioASerExcluido(null)
     hideModal()
   }
+  
 
 
   return (
@@ -78,7 +80,7 @@ export default function ListaCardapio({ navigation, route }) {
       source={require('../../../assets/logo.png')}
       style={styles.logo}
       />
-      <Text variant='titleLarge' style={styles.title} >CARDAPIO</Text>
+      <Text variant='titleLarge' style={styles.title} >CARDÁPIO</Text>
 
       <FlatList
         style={styles.list}
@@ -106,7 +108,7 @@ export default function ListaCardapio({ navigation, route }) {
               <Button style={{color:'#010101', fontWeight: 'bold', fontSize:18}}  onPress={() => navigation.push('FormCardapio', { acao: editarCardapio, cardapio: item })}>
                 Editar
               </Button>
-              <Button onPress={() => {
+              <Button  onPress={() => {
                 setCardapioASerExcluido(item)
                 showModal()
               }}>
@@ -157,7 +159,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#881235'
   },
   title: {
-    fontWeight: 'bold',
     margin: 10
   },
   fab: {
@@ -172,12 +173,12 @@ const styles = StyleSheet.create({
   },
   card: {
     marginTop: 15,
-    backgroundColor:"#9e9e9e",
+    backgroundColor:"#650d27",
     
   },
   cardContent: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#e6e6e6',
     borderWidth: 2,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -197,11 +198,12 @@ const styles = StyleSheet.create({
     width: 100,
     marginBottom: 20,
     alignSelf: "flex-start",
-    marginRight: 10,
+    marginLeft: 15,
+    
   },
 
   textButton: {
-    fontSize: 22,
+    fontSize: 20,
     color: "#881235",
     fontWeight: "bold",
     alignSelf: "center",
