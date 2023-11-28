@@ -5,6 +5,13 @@ import { TouchableOpacity } from 'react-native'
 
 const SouCLi = ({navigation}) => {
 
+  const navigateFeedback = () =>{
+    navigation.navigate('ListaFeedback');
+  }
+
+  const navigateTrabalhe = () =>{
+    navigation.navigate('ListaTrabalhe');
+  }
     const navigateVoltar = () =>{
         navigation.navigate('Home');
       }
@@ -25,12 +32,14 @@ const SouCLi = ({navigation}) => {
 
        <TouchableOpacity 
               style={styles.button}
+              onPress={navigateFeedback}
       >  
             <Text style={styles.textButton}>FeedBack</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
               style={styles.button}
+              onPress={navigateTrabalhe}
       >  
             <Text style={styles.textButton}>Trabalhe Conosco</Text>
           </TouchableOpacity>

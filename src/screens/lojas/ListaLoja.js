@@ -5,69 +5,69 @@ import { FlatList, Image, StyleSheet, View } from 'react-native'
 import { Button, Card, Dialog, FAB, MD3Colors, Portal, Text } from 'react-native-paper'
 import Toast from 'react-native-toast-message'
 
-export default function ListaCardapio({ navigation, route }) {
+export default function ListaLoja({ navigation, route }) {
 
   const navigateVoltar = () =>{
     navigation.navigate('Home');
   }
 
 
-  const [cardapios, setCardapios] = useState([])
-  const [showModalExcluirCardapio, setShowModalExcluirCardapio] = useState(false)
-  const [cardapioASerExcluido, setCardapioASerExcluido] = useState(null)
+  const [lojas, setLojas] = useState([])
+  const [showModalExcluirLoja, setShowModalExcluirLoja] = useState(false)
+  const [lojaASerExcluido, setLojaASerExcluido] = useState(null)
 
   useEffect(() => {
-    loadCardapios()
+    loadLojas()
   }, [])
 
-  async function loadCardapios() {
-    const response = await AsyncStorage.getItem('cardapios');
-    console.log("🚀 ~ file: ListaCardapioAsyncStorage.js:21 ~ loadCardapios ~ response:", response)
-    const cardapiosStorage = response ? JSON.parse(response) : [];
-    setCardapios(cardapiosStorage);
+  async function loadLojas() {
+    const response = await AsyncStorage.getItem('lojas');
+    console.log("🚀 ~ file: ListaLojaAsyncStorage.js:21 ~ loadLojas ~ response:", response)
+    const lojasStorage = response ? JSON.parse(response) : [];
+    setLojas(lojasStorage);
   }
 
-  const showModal = () => setShowModalExcluirCardapio(true);
+  const showModal = () => setShowModalExcluirLoja(true);
 
-  const hideModal = () => setShowModalExcluirCardapio(false);
+  const hideModal = () => setShowModalExcluirLoja(false);
 
-  async function adicionarCardapio(cardapio) {
-    let novaListaCardapios = cardapios;
-    novaListaCardapios.push(cardapio);
-    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios));
-    setCardapios(novaListaCardapios);
+  async function adicionarLoja(loja) {
+    let novaListaLojas = lojas;
+    novaListaLojas.push(loja);
+    await AsyncStorage.setItem('lojas', JSON.stringify(novaListaLojas));
+    setLojas(novaListaLojas);
   }
 
-  async function editarCardapio(cardapioAntigo, novosDados) {
-    console.log('CARDAPIO ANTIGO -> ', cardapioAntigo)
+  async function editarLoja(lojaAntigo, novosDados) {
+    console.log('LOJA ANTIGA -> ', lojaAntigo)
     console.log('DADOS NOVOS -> ', novosDados)
 
-    const novaListaCardapios = cardapios.map(cardapio => {
-      if (cardapio == cardapioAntigo) {
+    const novaListaLojas = lojas.map(loja => {
+      if (loja == lojaAntigo) {
         return novosDados
       } else {
-        return cardapio
+        return loja
       }
     })
 
-    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
-    setCardapios(novaListaCardapios)
+    await AsyncStorage.setItem('lojas', JSON.stringify(novaListaLojas))
+    setLojas(novaListaLojas)
 
   }
 
-  async function excluirCardapio(cardapio) {
-    const novaListaCardapios = cardapios.filter(c => c !== cardapio)
-    await AsyncStorage.setItem('cardapios', JSON.stringify(novaListaCardapios))
-    setCardapios(novaListaCardapios)
+  async function excluirLoja(loja) {
+    const novaListaLojas = lojas.filter(c => c !== loja)
+    await AsyncStorage.setItem('lojas', JSON.stringify(novaListaLojas))
+    setLojas(novaListaLojas)
     Toast.show({
       type: 'success',
-      text1: 'Cardapio excluido com sucesso!'
+      text1: 'Loja excluida com sucesso!'
     })
   }
 
-  function handleExluirCardapio() {
-    excluirCardapio(cardapioASerExcluido)
-    setCardapioASerExcluido(null)
+  function handleExluirLoja() {
+    excluirLoja(lojaASerExcluido)
+    setLojaASerExcluido(null)
     hideModal()
   }
   
@@ -79,11 +79,11 @@ export default function ListaCardapio({ navigation, route }) {
       source={require('../../../assets/logo.png')}
       style={styles.logo}
       />
-      <Text variant='titleLarge' style={styles.title} >CARDÁPIO</Text>
+      <Text variant='titleLarge' style={styles.title} >LOJA</Text>
 
       <FlatList
         style={styles.list}
-        data={cardapios}
+        data={lojas}
         renderItem={({ item }) => (
 
         <Card
@@ -94,21 +94,20 @@ export default function ListaCardapio({ navigation, route }) {
               style={styles.cardContent}
             >
               <View style={{ flex: 1 }}>
-                <Text variant='titleMedium' style={{color:'#010101', fontWeight: 'bold', fontSize:18}}>{item?.nome}</Text>
 
-                <Text variant='bodyLarge' style={{color:'#2d2d2d'}}>Descrição: {item?.descricao}</Text>
+                <Text variant='bodyLarge' style={{color:'#2d2d2d'}}>Estado: {item?.descricao}</Text>
 
-                <Text variant='bodyLarge' style={{color:'#2d2d2d'}}>Calorias: {item?.calorias} kcal</Text>
+                <Text variant='bodyLarge' style={{color:'#2d2d2d'}}>CEP: {item?.calorias} </Text>
                 
               </View>
               </Card.Content>
 
             <Card.Actions>
-              <Button style={{color:'#010101', fontWeight: 'bold', fontSize:18}}  onPress={() => navigation.push('FormCardapio', { acao: editarCardapio, cardapio: item })}>
+              <Button style={{color:'#010101', fontWeight: 'bold', fontSize:18}}  onPress={() => navigation.push('FormLoja', { acao: editarLoja, loja: item })}>
                 Editar
               </Button>
               <Button  onPress={() => {
-                setCardapioASerExcluido(item)
+                setLojaASerExcluido(item)
                 showModal()
               }}>
                 Excluir
@@ -122,18 +121,18 @@ export default function ListaCardapio({ navigation, route }) {
         icon="plus"
         style={styles.fab}
         color="#881235"
-        onPress={() => navigation.navigate('FormCardapio', { acao: adicionarCardapio })}
+        onPress={() => navigation.navigate('FormLoja', { acao: adicionarLoja })}
       />
 
 <Portal>
-        <Dialog visible={showModalExcluirCardapio} onDismiss={hideModal}>
+        <Dialog visible={showModalExcluirLoja} onDismiss={hideModal}>
           <Dialog.Title>Atenção!</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">Tem certeza que deseja excluir este item?</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={hideModal}>Voltar</Button>
-            <Button onPress={handleExluirCardapio}>Tenho Certeza</Button>
+            <Button onPress={handleExluirLoja}>Tenho Certeza</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

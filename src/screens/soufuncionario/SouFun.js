@@ -5,9 +5,18 @@ import { TouchableOpacity } from 'react-native'
 
 const SouFun = ({navigation}) => {
 
+     const navigateLoja = () =>{
+       navigation.navigate('ListaLoja');
+     }
+
     const navigateCardapio = () =>{
         navigation.navigate('ListaCardapio');
       }
+
+      const navigateFuncionario = () =>{
+        navigation.navigate('ListaFuncionario');
+      }
+
     const navigateVoltar = () =>{
         navigation.navigate('Home');
       }
@@ -28,6 +37,7 @@ const SouFun = ({navigation}) => {
 
        <TouchableOpacity 
               style={styles.button}
+              onPress={navigateLoja}
       >  
             <Text style={styles.textButton}>Nova Loja</Text>
           </TouchableOpacity>
@@ -41,6 +51,7 @@ const SouFun = ({navigation}) => {
 
           <TouchableOpacity 
               style={styles.button}
+              onPress={navigateFuncionario}
       >  
             <Text style={styles.textButton}>Novo Funcionário</Text>
           </TouchableOpacity>

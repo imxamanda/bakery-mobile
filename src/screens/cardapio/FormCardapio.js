@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message'
 import * as Yup from 'yup'
 
 
+
 export default function FormCardapio({ navigation, route }) {
 
   const { acao, cardapio: cardapioAntigo } = route.params
@@ -16,9 +17,9 @@ export default function FormCardapio({ navigation, route }) {
   const [calorias, setCalorias] = useState(0);
 
   const validationSchema = Yup.object().shape({
-    nome: Yup.string().required(),
-    descricao: Yup.string().required(),
-    calorias: Yup.string().required(),
+    nome: Yup.string().required('Campo obrigatório'),
+    descricao: Yup.string().required('Campo obrigatório'),
+    calorias: Yup.string().required('Campo obrigatório'),
 })
 
 useEffect(() => {
@@ -82,6 +83,8 @@ function salvar(novoCardapio) {
       onBlur={handleBlur('nome')}
     />
 
+{(touched.nome && errors.nome) && <Text style={{ color: 'black' }}>{errors.nome}</Text>}
+
    <TextInput
       style={styles.input}
       mode='outlined'
@@ -91,14 +94,20 @@ function salvar(novoCardapio) {
       onBlur={handleBlur('descricao')}
     />
 
+{(touched.descricao && errors.descricao) && <Text style={{ color: 'black' }}>{errors.descricao}</Text>}
+
     <TextInput
       style={styles.input}
       mode='outlined'
       label='Calorias'
+      keyboardType='numeric'
       value={values.calorias}
       onChangeText={handleChange('calorias')}
       onBlur={handleBlur('calorias')}
-    />  
+    /> 
+
+    {(touched.calorias && errors.calorias) && <Text style={{ color: 'black' }}>{errors.calorias}</Text>}
+
     </View>
     <View style={styles.buttonContainer}>
       
