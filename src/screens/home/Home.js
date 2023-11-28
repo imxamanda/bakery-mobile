@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native'
+import { Video, ResizeMode } from 'expo-av';
 
 
 const Home = ({navigation}) => {
@@ -13,6 +14,9 @@ const Home = ({navigation}) => {
   const navigateSouFun = () =>{
     navigation.navigate('SouFun');
   }
+
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
   
   return (
     <View style={styles.container}>
@@ -41,6 +45,25 @@ const Home = ({navigation}) => {
             <Text style={styles.textButton}>Sou Funcionário</Text>
           </TouchableOpacity>
           
+          <Video
+          ref={video}
+          style={styles.video}
+          source={{
+          uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+        }}
+        useNativeControls
+        resizeMode="{ResizeMode.STRETCH}"
+        isLooping
+        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      />
+      <View style={styles.buttonv}>
+        <Button 
+          title={status.isPlaying ? 'Pause' : 'Play'}
+          onPress={() =>
+            status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+          }
+        />
+        </View>
 
 
     </View>
@@ -73,6 +96,15 @@ const styles = StyleSheet.create({
     width: 300,
     marginBottom: 20
   },
+  buttonv: {
+    backgroundColor: "#650d27",
+    borderRadius: 100,
+    paddingTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    width: 150,
+    marginBottom: 20
+  },
 
   textButton: {
     fontSize: 20,
@@ -80,5 +112,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
   },
+  video:{
+    width: 380,
+    height: 200,
+
+  }
 
 })
