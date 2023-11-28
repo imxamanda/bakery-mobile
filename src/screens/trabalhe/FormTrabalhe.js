@@ -2,12 +2,15 @@ import { Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { TextInputMask } from 'react-native-masked-text';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import * as Yup from 'yup';
 
 export default function FormTrabalhe({ navigation, route }) {
   const { acao, trabalhe: trabalheAntigo } = route.params;
+
+  console.log(trabalheAntigo)
 
   const [nome, setNome] = useState('');
   const [escolaridade, setEscolaridade] = useState('');
@@ -58,11 +61,11 @@ export default function FormTrabalhe({ navigation, route }) {
 
       <Formik
         initialValues={{
-          nome: '',
-          escolaridade: '',
-          dataNascimento: '',
-          email: '',
-          telefone: '',
+          nome: nome,
+          escolaridade: escolaridade,
+          dataNascimento: dataNascimento,
+          email: email,
+          telefone: telefone,
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => salvar(values)}
@@ -101,6 +104,12 @@ export default function FormTrabalhe({ navigation, route }) {
                 value={values.dataNascimento}
                 onChangeText={handleChange('dataNascimento')}
                 onBlur={handleBlur('dataNascimento')}
+                render={props => 
+                <TextInputMask
+                  {...props}
+                  type={'datetime'}
+                />
+                }
               />
 
               {touched.dataNascimento && errors.dataNascimento && (
@@ -125,6 +134,12 @@ export default function FormTrabalhe({ navigation, route }) {
                 value={values.telefone}
                 onChangeText={handleChange('telefone')}
                 onBlur={handleBlur('telefone')}
+                render={props => 
+                  <TextInputMask
+                    {...props}
+                    type={'cel-phone'}
+                  />
+                  }
               />
 
               {touched.telefone && errors.telefone && <Text style={{ color: 'black' }}>{errors.telefone}</Text>}

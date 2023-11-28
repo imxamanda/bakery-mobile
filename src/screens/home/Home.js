@@ -112,10 +112,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
   },
-  // video:{
-  //   width: 380,
-  //   height: 200,
 
-  // }
 
 })
